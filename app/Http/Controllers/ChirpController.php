@@ -32,10 +32,21 @@ class ChirpController
     /**
      * Store a newly created resource in storage.
      */
+    
     public function store(Request $request)
     {
-        //
-    }
+        $validated = $request->validate([
+            'message' => 'required|string|max:255',
+        ]);
+        
+        \App\Models\Chirp::create([
+            'message' => $validated['message'],
+            'user_id' => null, 
+         ]);
+
+    // Redirect back to the feed
+    return redirect('/')->with('success', 'Chirp created!');
+}
 
     /**
      * Display the specified resource.
