@@ -64,11 +64,19 @@ class ChirpController
      */
     public function edit(Chirp $chirp)
     {
+        if ($chirp->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
         return view('chirps.edit', compact('chirp'));
     }
     
     public function update(Request $request, Chirp $chirp)
     {
+        if ($chirp->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+        
         $validated = $request->validate([
             'message' => 'required|string|max:255',
         ]);
@@ -80,6 +88,10 @@ class ChirpController
     
     public function destroy(Chirp $chirp)
     {
+        if ($chirp->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+        
         $chirp->delete();
         
         return redirect('/')->with('success', 'Chirp deleted!');
