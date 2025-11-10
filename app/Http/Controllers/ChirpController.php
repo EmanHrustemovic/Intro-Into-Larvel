@@ -37,19 +37,13 @@ class ChirpController
     {
         $validated = $request->validate([
             'message' => 'required|string|max:255',
-        ], 
-        [
-            'message.required' => 'Please write something to chirp!',
-            'message.max' => 'Chirps must be 255 characters or less.',
-        ]);
-        
-        \App\Models\Chirp::create([
-            'message' => $validated['message'],
-            'user_id' => null,
         ]);
 
-    return redirect('/')->with('success', 'Your chirp has been posted!');
-}
+        // Use the authenticated user
+        auth()->user()->chirps()->create($validated);
+        
+        return redirect('/')->with('success', 'Your chirp has been posted!');
+    }
 
     /**
      * Display the specified resource.
@@ -64,33 +58,27 @@ class ChirpController
      */
     public function edit(Chirp $chirp)
     {
-        if ($chirp->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized');
-        }
-
+        $this->authorize('update', $chirp);
+        
         return view('chirps.edit', compact('chirp'));
     }
     
     public function update(Request $request, Chirp $chirp)
     {
-        if ($chirp->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized');
-        }
+        $this->authorize('update', $chirp);
         
         $validated = $request->validate([
             'message' => 'required|string|max:255',
         ]);
         
         $chirp->update($validated);
-
+        
         return redirect('/')->with('success', 'Chirp updated!');
     }
     
     public function destroy(Chirp $chirp)
     {
-        if ($chirp->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized');
-        }
+        $this->authorize('delete', $chirp);
         
         $chirp->delete();
         
