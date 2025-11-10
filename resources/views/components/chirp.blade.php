@@ -14,7 +14,7 @@
                 <div class="flex items-center justify-between">
                     <div class="flex items-center space-x-1">
                         <p class="text-sm font-semibold">
-                            {{ $chirp->user->name }}
+                            {{ $chirp->user?->name ?? 'Unknown' }}
                         </p>
                         <span class="text-base-content/60">·</span>
                         <p class="text-sm text-base-content/60">
