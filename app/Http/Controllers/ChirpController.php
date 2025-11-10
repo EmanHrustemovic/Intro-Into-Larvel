@@ -38,13 +38,11 @@ class ChirpController
         $validated = $request->validate([
             'message' => 'required|string|max:255',
         ]);
-
         // Use the authenticated user
         auth()->user()->chirps()->create($validated);
         
         return redirect('/')->with('success', 'Your chirp has been posted!');
     }
-
     /**
      * Display the specified resource.
      */
